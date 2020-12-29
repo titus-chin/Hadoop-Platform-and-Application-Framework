@@ -1,0 +1,28 @@
+# Tutorial Exercise 1: Ingest Structured Data into HDFS
+
+##1. Sqoop structured data from MySQL into HDFS and transform it into Avro file format
+```
+sudo -u hdfs hdfs dfsadmin -safemode leave
+sqoop import-all-tables \
+-m 1 \
+--connect jdbc:mysql://quickstart:3306/retail_db \
+--username=retail_dba \
+--password=cloudera \
+--compression-codec=snappy \
+--as-avrodatafile \
+--warehouse-dir=/user/hive/warehouse
+```
+
+##2. Verification step
+```
+hadoop fs -ls /user/hive/warehouse
+hadoop fs -ls /user/hive/warehouse/categories/
+ls -l *.avsc
+```
+
+##3. Import the schema files
+```
+sudo -u hdfs hadoop fs -mkdir /user/examples
+sudo -u hdfs hadoop fs -chmod +rw /user/examples
+hadoop fs -copyFromLocal ~/*.avsc /user/examples/
+```
